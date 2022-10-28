@@ -19,11 +19,20 @@
                     <h3 th:if="${(game.getPlayerMove().name!=null && game.getPlayerMove().name==player.name) || (game.getPlayerMove().name==null && player.name==null)}">
                         <i style="color:RED" class="bi bi-play-fill"></i>
                     </h3>
-                    <h3 th:text="${player.name!= null ? player.name : 'WAITING FO OPPONENT'}"></h3>
+                    <h3 th:text="${player.name!= null ? player.name : 'WAITING FOR OPPONENT'}"></h3>
                 </div>
             </div>
             <div class="col-md-6">
                 <h3 th:text="${player.symbol}"></h3>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div th:if="${game.winnerInfo!=null}" style="text-align:center; margin-top:1%"
+                     class="alert alert-success">
+                    <h4 class="success" th:text="${game.winnerInfo}"></h4>
+                </div>
             </div>
         </div>
 

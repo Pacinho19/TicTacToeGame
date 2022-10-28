@@ -6,6 +6,7 @@ import pl.pacinho.tictactoegame.exception.GameNotFoundException;
 import pl.pacinho.tictactoegame.model.GameDto;
 import pl.pacinho.tictactoegame.model.MoveDto;
 import pl.pacinho.tictactoegame.model.PlayerDto;
+import pl.pacinho.tictactoegame.utils.FinishOptions;
 import pl.pacinho.tictactoegame.model.enums.GameStatus;
 import pl.pacinho.tictactoegame.model.enums.Symbol;
 import pl.pacinho.tictactoegame.repository.GameRepository;
@@ -21,7 +22,26 @@ public class GameService {
     public void playerMove(String name, MoveDto moveDto) {
         GameDto game = findById(moveDto.getGameId());
         game.makeMove(moveDto, getPlayerSymbol(name, game));
-        game.switchPlayer();
+
+        checkEndGame(game);
+        if (game.getStatus() != GameStatus.FINISHED) game.switchPlayer();
+    }
+
+    private void checkEndGame(GameDto game) {
+        String win = FinishOptions.check(game.getBoard());
+        if (win == null) return;
+
+        game.setStatus(GameStatus.FINISHED);
+        game.setWinnerInfo(getWinnerInfo(win, game));
+    }
+
+    private String getWinnerInfo(String win, GameDto game) {
+        return game.getPlayers()
+                .stream()
+                .filter(p -> p.getSymbol().name().equals(win))
+                .map(p -> p.getName() + " win the game!")
+                .findFirst()
+                .orElse(win);
     }
 
     private Symbol getPlayerSymbol(String name, GameDto game) {
@@ -58,6 +78,7 @@ public class GameService {
 
     public boolean checkPlayerMove(GameDto game, String name) {
         PlayerDto nextPlayer = game.getPlayerMove();
+        if (game.getStatus() == GameStatus.FINISHED) return false;
         if (nextPlayer == null) return false;
         if (nextPlayer.getName() == null) return false;
         return nextPlayer.getName().equals(name);

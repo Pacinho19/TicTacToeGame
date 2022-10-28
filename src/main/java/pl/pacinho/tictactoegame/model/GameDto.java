@@ -21,6 +21,9 @@ public class GameDto {
     private Symbol[][] board;
     private int nextPlayer;
 
+    @Setter
+    private String winnerInfo;
+
     public GameDto(String player1) {
         board = BoardUtils.emptyBoard();
         players = new LinkedList<>();
