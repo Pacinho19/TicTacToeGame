@@ -1,0 +1,22 @@
+<div th:fragment="boardFrag">
+  <div id="board">
+
+    <table class="center">
+      <tr th:each="i: ${game.board}">
+        <td th:each="cell: ${i}">
+          <span th:if="${cell.name!='FREE'}" th:text="${cell.name}"></span >
+        </td>
+      <tr>
+    </table>
+
+    <div class="row" th:each="player : ${game.players}">
+      <div class="col-md-6">
+        <h3 th:text="${player.name!= null ? player.name : 'WAITING FO OPPONENT'}"></h3>
+      </div>
+      <div class="col-md-6">
+        <h3 th:text="${player.symbol}"></h3>
+      </div>
+    </div>
+
+  </div>
+</div>
