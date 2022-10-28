@@ -45,6 +45,13 @@
                 });
             };
 
+            stompClient = Stomp.over(socket);
+            function move(x, y) {
+                var gameId = document.getElementById('gameId').value;
+                stompClient.send("/app/move", {},
+                  JSON.stringify({'gameId':gameId, 'x': x, 'y': y}));
+            }
+
             $(document).ready(function() {
                 $("#join-player-alert").hide();
             });
@@ -57,7 +64,7 @@
             };
 
             function home (){
-                window.location.href = '/rps-game'
+                window.location.href = '/tic-tac-toe'
             };
 
     </script>

@@ -1,22 +1,31 @@
 <div th:fragment="boardFrag">
-  <div id="board">
+    <div id="board">
 
-    <table class="center">
-      <tr th:each="i: ${game.board}">
-        <td th:each="cell: ${i}">
-          <span th:if="${cell.name!='FREE'}" th:text="${cell.name}"></span >
-        </td>
-      <tr>
-    </table>
+        <table class="center">
+            <tr th:each="i, y: ${game.board}">
+                <td th:each="cell, x: ${i}">
+                    <button th:if="${cell.name!='FREE'}" th:text="${cell.name}"
+                            style="width:100%;height:100%;"></button>
+                    <button th:if="${cell.name=='FREE' && move!=null && move}"
+                            th:attr="onclick=|move('${x.index}', '${y.index}')|"
+                            style="width:100%;height:100%;"></button>
+                </td>
+            <tr>
+        </table>
 
-    <div class="row" th:each="player : ${game.players}">
-      <div class="col-md-6">
-        <h3 th:text="${player.name!= null ? player.name : 'WAITING FO OPPONENT'}"></h3>
-      </div>
-      <div class="col-md-6">
-        <h3 th:text="${player.symbol}"></h3>
-      </div>
+        <div class="row" th:each="player : ${game.players}">
+            <div class="col-md-6">
+                <div class="row">
+                    <h3 th:if="${(game.getPlayerMove().name!=null && game.getPlayerMove().name==player.name) || (game.getPlayerMove().name==null && player.name==null)}">
+                        <i style="color:RED" class="bi bi-play-fill"></i>
+                    </h3>
+                    <h3 th:text="${player.name!= null ? player.name : 'WAITING FO OPPONENT'}"></h3>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3 th:text="${player.symbol}"></h3>
+            </div>
+        </div>
+
     </div>
-
-  </div>
 </div>

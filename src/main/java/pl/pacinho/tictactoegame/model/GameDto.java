@@ -18,8 +18,8 @@ public class GameDto {
     private GameStatus status;
     private LinkedList<PlayerDto> players;
     private LocalDateTime startTime;
-
     private Symbol[][] board;
+    private int nextPlayer;
 
     public GameDto(String player1) {
         board = BoardUtils.emptyBoard();
@@ -29,5 +29,19 @@ public class GameDto {
         this.id = UUID.randomUUID().toString();
         this.status = GameStatus.NEW;
         this.startTime = LocalDateTime.now();
+        this.nextPlayer = 0;
+    }
+
+    public void switchPlayer() {
+        if (this.nextPlayer == 0) this.nextPlayer = 1;
+        else this.nextPlayer = 0;
+    }
+
+    public PlayerDto getPlayerMove() {
+        return players.get(nextPlayer);
+    }
+
+    public void makeMove(MoveDto moveDto, Symbol symbol) {
+        board[moveDto.getY()][moveDto.getX()] = symbol;
     }
 }

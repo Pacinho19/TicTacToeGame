@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.pacinho.tictactoegame.model.GameDto;
 import pl.pacinho.tictactoegame.service.GameService;
 import pl.pacinho.tictactoegame.ui.UIConfig;
 
@@ -29,8 +30,10 @@ public class GameController {
     }
 
     @PostMapping(UIConfig.PLAYER_MOVE)
-    public String playerMove(@PathVariable(value = "gameId") String gameId, Model model) {
-        model.addAttribute("game", gameService.findById(gameId));
+    public String playerMove(@PathVariable(value = "gameId") String gameId, Model model, Authentication authentication) {
+        GameDto game = gameService.findById(gameId);
+        model.addAttribute("game", game);
+        model.addAttribute("move", gameService.checkPlayerMove(game, authentication.getName()));
         return "board :: boardFrag";
     }
 
@@ -54,8 +57,8 @@ public class GameController {
     @PostMapping(UIConfig.JOIN_TO_GAME)
     public String joinGame(@PathVariable(value = "gameId") String gameId, Authentication authentication, Model model) {
         try {
-            if(gameService.checkOpenGame(gameId, authentication.getName()))
-                return "redirect:" + UIConfig.GAMES + "/" +gameId;
+            if (gameService.checkOpenGame(gameId, authentication.getName()))
+                return "redirect:" + UIConfig.GAMES + "/" + gameId;
 
             gameService.joinGame(authentication.getName(), gameId);
             model.addAttribute("gameId", gameId);

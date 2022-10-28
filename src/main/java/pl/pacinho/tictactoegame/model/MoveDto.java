@@ -6,5 +6,6 @@ import lombok.Getter;
 public class MoveDto {
 
     private String gameId;
-    private int position;
+    private int x;
+    private int y;
 }

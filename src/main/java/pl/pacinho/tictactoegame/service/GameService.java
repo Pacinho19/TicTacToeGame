@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.pacinho.tictactoegame.exception.GameNotFoundException;
 import pl.pacinho.tictactoegame.model.GameDto;
 import pl.pacinho.tictactoegame.model.MoveDto;
+import pl.pacinho.tictactoegame.model.PlayerDto;
 import pl.pacinho.tictactoegame.model.enums.GameStatus;
+import pl.pacinho.tictactoegame.model.enums.Symbol;
 import pl.pacinho.tictactoegame.repository.GameRepository;
 
 import java.util.List;
@@ -17,6 +19,16 @@ public class GameService {
     private final GameRepository gameRepository;
 
     public void playerMove(String name, MoveDto moveDto) {
+        GameDto game = findById(moveDto.getGameId());
+        game.makeMove(moveDto, getPlayerSymbol(name, game));
+        game.switchPlayer();
+    }
+
+    private Symbol getPlayerSymbol(String name, GameDto game) {
+        if (game.getPlayerMove().getName() == null || !game.getPlayerMove().getName().equals(name))
+            throw new IllegalStateException("It's not your turn!");
+
+        return game.getPlayerMove().getSymbol();
     }
 
     public List<GameDto> getAvailableGames() {
@@ -42,5 +54,12 @@ public class GameService {
     public void joinGame(String name, String gameId) {
         GameDto game = gameRepository.joinGame(name, gameId);
         game.setStatus(GameStatus.IN_PROGRESS);
+    }
+
+    public boolean checkPlayerMove(GameDto game, String name) {
+        PlayerDto nextPlayer = game.getPlayerMove();
+        if (nextPlayer == null) return false;
+        if (nextPlayer.getName() == null) return false;
+        return nextPlayer.getName().equals(name);
     }
 }
