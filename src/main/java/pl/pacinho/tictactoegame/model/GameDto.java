@@ -7,7 +7,9 @@ import pl.pacinho.tictactoegame.model.enums.Symbol;
 import pl.pacinho.tictactoegame.utils.BoardUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -23,6 +25,8 @@ public class GameDto {
 
     @Setter
     private String winnerInfo;
+    @Setter
+    private List<String> winnerCells;
 
     public GameDto(String player1) {
         board = BoardUtils.emptyBoard();
@@ -33,6 +37,7 @@ public class GameDto {
         this.status = GameStatus.NEW;
         this.startTime = LocalDateTime.now();
         this.nextPlayer = 0;
+        this.winnerCells = new ArrayList<>();
     }
 
     public void switchPlayer() {

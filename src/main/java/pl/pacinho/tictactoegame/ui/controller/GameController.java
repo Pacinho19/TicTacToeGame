@@ -39,8 +39,13 @@ public class GameController {
 
 
     @PostMapping(UIConfig.NEW_GAME)
-    public String newGame(Authentication authentication) {
-        return "redirect:" + UIConfig.GAMES + "/" + gameService.newGame(authentication.getName());
+    public String newGame(Model model, Authentication authentication) {
+        try {
+            return "redirect:" + UIConfig.GAMES + "/" + gameService.newGame(authentication.getName());
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return gameHome(model);
+        }
     }
 
     @GetMapping(UIConfig.GAME_PAGE)

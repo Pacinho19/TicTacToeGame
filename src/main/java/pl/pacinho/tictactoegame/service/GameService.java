@@ -3,6 +3,7 @@ package pl.pacinho.tictactoegame.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pacinho.tictactoegame.exception.GameNotFoundException;
+import pl.pacinho.tictactoegame.model.FinishGamePropertiesDto;
 import pl.pacinho.tictactoegame.model.GameDto;
 import pl.pacinho.tictactoegame.model.MoveDto;
 import pl.pacinho.tictactoegame.model.PlayerDto;
@@ -28,11 +29,12 @@ public class GameService {
     }
 
     private void checkEndGame(GameDto game) {
-        String win = FinishOptions.check(game.getBoard());
-        if (win == null) return;
+        FinishGamePropertiesDto finishGamePropertiesDto = FinishOptions.check(game.getBoard());
+        if (finishGamePropertiesDto == null) return;
 
         game.setStatus(GameStatus.FINISHED);
-        game.setWinnerInfo(getWinnerInfo(win, game));
+        game.setWinnerInfo(getWinnerInfo(finishGamePropertiesDto.getName(), game));
+        game.setWinnerCells(finishGamePropertiesDto.getCells());
     }
 
     private String getWinnerInfo(String win, GameDto game) {
@@ -56,6 +58,9 @@ public class GameService {
     }
 
     public String newGame(String name) {
+        List<GameDto> activeGames = getAvailableGames();
+        if (activeGames.size() >= 10)
+            throw new IllegalStateException("Cannot create new Game! Active game count : " + activeGames.size());
         return gameRepository.newGame(name);
     }
 

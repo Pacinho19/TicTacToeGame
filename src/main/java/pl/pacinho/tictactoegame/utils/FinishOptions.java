@@ -1,9 +1,11 @@
 package pl.pacinho.tictactoegame.utils;
 
 import org.apache.commons.lang3.tuple.Pair;
+import pl.pacinho.tictactoegame.model.FinishGamePropertiesDto;
 import pl.pacinho.tictactoegame.model.enums.Symbol;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FinishOptions {
@@ -21,14 +23,21 @@ public class FinishOptions {
             List.of(Pair.of(0, 2), Pair.of(1, 1), Pair.of(2, 0))
     );
 
-    public static String check(Symbol[][] board) {
-        if (checkDraw(board)) return "DRAW!";
+    public static FinishGamePropertiesDto check(Symbol[][] board) {
+        if (checkDraw(board)) return new FinishGamePropertiesDto("DRAW!", Collections.emptyList());
 
         for (List<Pair<Integer, Integer>> row : options) {
             List<String> lineValues = getLineValues(board, row);
-            if (lineValues.size() == 1 && !lineValues.get(0).equals(Symbol.FREE.name())) return lineValues.get(0);
+            if (lineValues.size() == 1 && !lineValues.get(0).equals(Symbol.FREE.name()))
+                return new FinishGamePropertiesDto(lineValues.get(0), getCellList(row));
         }
         return null;
+    }
+
+    private static List<String> getCellList(List<Pair<Integer, Integer>> row) {
+        return row.stream()
+                .map(p -> p.getLeft() + "x" + p.getRight())
+                .toList();
     }
 
     private static List<String> getLineValues(Symbol[][] board, List<Pair<Integer, Integer>> row) {
